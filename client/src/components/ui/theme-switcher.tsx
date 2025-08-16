@@ -5,9 +5,9 @@ import { useTheme } from '../theme-provider';
 const ThemeSwitcher = () => {
     const { setTheme, theme } = useTheme();
     return (
-        <div className="absolute bottom-5 right-5">
+        <div className="absolute -top-0 right-5">
             <Button
-                variant="outline"
+                variant="ghost"
                 className="rounded-full p-2"
                 size="icon"
                 onClick={() => {

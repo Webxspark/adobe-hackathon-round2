@@ -1,0 +1,3 @@
+export const APP_CONFIG = {
+    EMBED_API_CLIENT_ID: "5e6da846e0fa492288b7f12243a678eb"
+}
