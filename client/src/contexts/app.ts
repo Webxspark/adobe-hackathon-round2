@@ -1,5 +1,5 @@
 import {create} from "zustand";
-import type {ITab} from "@/types";
+import type {IAllDocumentInfo, ISingleDocumentInfo, ITab} from "@/types";
 
 interface AppState {
     tabs: ITab[],
@@ -7,6 +7,16 @@ interface AppState {
     removeTab: (idx: number) => void,
     activeTab: number | null,
     setActiveTab: (idx: number | null) => void,
+    nextTab: () => void,
+    previousTab: () => void,
+    documents: IAllDocumentInfo[],
+    setDocuments: (docs: IAllDocumentInfo[]) => void,
+    documentRefresh: boolean,
+    setDocumentRefresh: (value: boolean) => void,
+    singleDocuments: {
+        [key: string]: ISingleDocumentInfo | undefined
+    },
+    setSingleDocument: (id: string, doc: ISingleDocumentInfo) => void,
 }
 
 export const useAppContext = create<AppState>((set, get) => ({
@@ -48,16 +58,41 @@ export const useAppContext = create<AppState>((set, get) => ({
                 // Removed tab was after active tab, keep active tab index unchanged
                 newActiveTab = state.activeTab;
             }
-
-
             return {
                 tabs: newTabs,
-                activeTab: newActiveTab
+                activeTab: state.activeTab === null ? null : newActiveTab
             };
         });
     },
     activeTab: null,
     setActiveTab: (idx: number | null) => set(() => ({
         activeTab: idx
-    }))
+    })),
+    nextTab: () => set((state) => {
+        if (state.tabs.length === 0) return state; // No tabs to switch to
+        const nextIndex = state.activeTab === null ? 0 : (state.activeTab + 1) % state.tabs.length;
+        return {activeTab: nextIndex};
+    }),
+    previousTab: () => set((state) => {
+        if (state.tabs.length === 0) return state; // No tabs to switch to
+        const prevIndex = state.activeTab === null ? state.tabs.length - 1 : (state.activeTab - 1 + state.tabs.length) % state.tabs.length;
+        return {activeTab: prevIndex};
+    }),
+    documents: [],
+    setDocuments: (docs: IAllDocumentInfo[]) => set(() => ({
+        documents: docs
+    })),
+    documentRefresh: false,
+    setDocumentRefresh: (value: boolean) => set(() => ({
+        documentRefresh: value
+    })),
+    singleDocuments: {},
+    setSingleDocument: (id: string, doc: IAllDocumentInfo) => set((state) => {
+        return {
+            singleDocuments: {
+                ...state.singleDocuments,
+                [id]: doc
+            }
+        };
+    })
 }))

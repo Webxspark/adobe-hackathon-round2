@@ -1,22 +1,32 @@
-import {FileText, X} from "lucide-react";
+import {X} from "lucide-react";
 import {useAppContext} from "@/contexts/app.ts";
 import {cn} from "@/lib/utils.ts";
+import {FcDocument} from "react-icons/fc";
 
 const Navbar = () => {
     const {activeTab, tabs, removeTab, setActiveTab} = useAppContext();
     return (
-        <div className={'overflow-x-scroll flex items-center'}>
+        <div
+            onAuxClick={() => setActiveTab(null)}
+            className={'overflow-x-scroll flex items-center w-full'}>
             {tabs.length === 0 && <div className={'text-sm ml-2'}>
                     Team: O(1+1)
                 </div>
                 || tabs.map((tab, index) => (
-                    <button onClick={() => setActiveTab(index)} key={index}
-                            className={cn('flex items-center gap-x-3 h-full border-t-2 border-transparent', activeTab === index && "border-primary")}>
+                    <button
+                        onClick={() => setActiveTab(index)}
+                        onAuxClick={(e) => {
+                            e.stopPropagation();
+                            removeTab(index)
+                        }}
+                        key={index}
+                        className={cn('flex items-center gap-x-3 h-full border-t-2 border-transparent', activeTab === index && "border-primary")}
+                    >
                         <div
                             className={cn('flex items-center h-[33px] justify-between min-w-36 gap-1 border-r px-3 pr-2 dark:hover:bg-gray-900 hover:bg-gray-100 duration-100', activeTab === index && "dark:bg-[#18181b] bg-[bg-[#f4f4f5]")}
                         >
                             <div className={'flex items-center gap-2'}>
-                                <FileText className={'size-4'}/>
+                                <FcDocument className={'size-4'}/>
                                 <p className={'text-sm truncate max-w-36'}>
                                     {tab.title}
                                 </p>

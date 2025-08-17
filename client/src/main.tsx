@@ -4,6 +4,7 @@ import './index.css'
 import {ThemeProvider} from "@/components/theme-provider.tsx";
 import ThemeSwitcher from "@/components/ui/theme-switcher.tsx";
 import Preloader from "@/components/preloader.tsx";
+import {Toaster} from "@/components/ui/sonner.tsx";
 
 const App = lazy(() => import("@/App"));
 
@@ -15,6 +16,9 @@ createRoot(document.getElementById('root')!).render(
             >
                 <App/>
             </Suspense>
+            <Toaster
+                position={'bottom-right'}
+            />
             <ThemeSwitcher/>
         </ThemeProvider>
     </StrictMode>,

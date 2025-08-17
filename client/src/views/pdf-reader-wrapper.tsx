@@ -1,7 +1,10 @@
 import {cn} from "@/lib/utils.ts";
 import {useAppContext} from "@/contexts/app.ts";
-import {useEffect, useRef} from "react";
+import {useCallback, useEffect, useRef, useState} from "react";
 import {APP_CONFIG} from "@/constants/app.ts";
+import {LinearProgress} from "@mui/material";
+import {APIFetchSingleDocument} from "@/apis/helper.ts";
+import {toast} from "sonner";
 
 interface IPdfReaderPageProps {
     className?: string;
@@ -9,19 +12,37 @@ interface IPdfReaderPageProps {
 
 interface IPdfRenderComponentProps {
     url: string;
-    pid: number;
+    pid: string;
+    uid: number;
+    fileName?: string;
     className: string;
 }
 
-const PdfRender = ({url, className, pid}:IPdfRenderComponentProps) => {
+const PdfRender = ({url, className, pid, uid, fileName}: IPdfRenderComponentProps) => {
     const isMounted = useRef(false);
-    const div_id = Date.now();
+    const [loading, setLoading] = useState(false);
+    const {singleDocuments, setSingleDocument} = useAppContext();
+    const div_id = Date.now() + uid; // Unique ID for the div element
+
+    const fetchSingleDocument = useCallback(() => {
+        setLoading(true);
+        APIFetchSingleDocument(pid)
+            .then(response => {
+                setSingleDocument(pid, response)
+            })
+            .catch(error => {
+                console.error("Error fetching single document:", error);
+                toast.error("Failed to fetch document details.");
+            })
+            .finally(() => setLoading(false));
+    }, [pid, setSingleDocument])
+
     useEffect(() => {
         if (!isMounted.current) {
             isMounted.current = true;
             let adobeDCView = new AdobeDC.View({
                 clientId: APP_CONFIG.EMBED_API_CLIENT_ID,
-                divId: `adc-${div_id}-${pid}`,
+                divId: `${div_id}-${pid}`,
             })
             adobeDCView.previewFile({
                 content: {
@@ -30,16 +51,24 @@ const PdfRender = ({url, className, pid}:IPdfRenderComponentProps) => {
                     }
                 },
                 metaData: {
-                    fileName: `FileName - ${div_id}`,
+                    fileName,
                 }
             });
+
+            if (!singleDocuments[pid]) {
+                fetchSingleDocument();
+            }
         }
-    }, [div_id, pid, url]);
-    return(
-        <div
-            className={cn('h-[95dvh]', className)}
-            id={`adc-${div_id}-${pid}`}
-        />
+    }, [div_id, fetchSingleDocument, fileName, pid, singleDocuments, url]);
+    return (
+        <div className={cn('h-[95dvh] relative', className)}>
+            {loading && <div className={'absolute top-0 left-0 w-full'}>
+                <LinearProgress/>
+            </div>}
+            <div
+                id={`${div_id}-${pid}`}
+            />
+        </div>
     )
 }
 
@@ -52,7 +81,10 @@ const PdfReaderWrapper = ({className}: IPdfReaderPageProps) => {
                 tabs.map((tab, idx) => (
                     <PdfRender
                         url={tab.url}
-                        pid={idx}
+                        key={idx}
+                        pid={tab.id}
+                        uid={idx}
+                        fileName={tab.fileName!}
                         className={cn("hidden", activeTab === idx && "block")}
                     />
                 ))

@@ -6,6 +6,7 @@ import Navbar from "@/components/navbar.tsx";
 import FilePicker from "@/views/file-picker.tsx";
 import Preloader from "@/components/preloader.tsx";
 import {Suspense, useEffect, useRef, useState, lazy} from "react";
+import Keybinds from "@/components/utils/keybinds.tsx";
 
 const PdfReaderWrapper = lazy(() => import("@/views/pdf-reader-wrapper.tsx"));
 const App = () => {
@@ -32,7 +33,7 @@ const App = () => {
                 <Navbar/>
             </div>
             <FilePicker
-                className={cn("hidden", activeTab === null && "flex")}
+                className={cn("hidden", activeTab === null && "grid")}
             />
             {
                 loadPDFReaderWrapper && <Suspense
@@ -41,6 +42,8 @@ const App = () => {
                     <PdfReaderWrapper />
                 </Suspense>
             }
+
+            <Keybinds />
         </div>
     );
 };
