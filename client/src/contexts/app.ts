@@ -4,6 +4,7 @@ import type {IAllDocumentInfo, ISingleDocumentInfo, ITab} from "@/types";
 interface AppState {
     tabs: ITab[],
     addTab: (tab: ITab) => number,
+    updateTab: (idx: number, tab: ITab) => void,
     removeTab: (idx: number) => void,
     activeTab: number | null,
     setActiveTab: (idx: number | null) => void,
@@ -16,7 +17,7 @@ interface AppState {
     singleDocuments: {
         [key: string]: ISingleDocumentInfo | undefined
     },
-    setSingleDocument: (id: string, doc: ISingleDocumentInfo) => void,
+    setSingleDocument: (id: string, doc: ISingleDocumentInfo) => void
 }
 
 export const useAppContext = create<AppState>((set, get) => ({
@@ -30,6 +31,16 @@ export const useAppContext = create<AppState>((set, get) => ({
             };
         });
         return get().tabs.length - 1; // Return the index of the newly added tab
+    },
+    updateTab: (idx: number, tab: ITab) => {
+        set((state) => {
+            const newTabs = [...state.tabs];
+            newTabs[idx] = tab; // Update the tab at the specified index
+            return {
+                tabs: newTabs,
+                activeTab: state.activeTab === idx ? idx : state.activeTab // Keep active tab unchanged unless it's the one being updated
+            };
+        });
     },
     removeTab: (idx: number) => {
         set((state) => {
@@ -87,7 +98,7 @@ export const useAppContext = create<AppState>((set, get) => ({
         documentRefresh: value
     })),
     singleDocuments: {},
-    setSingleDocument: (id: string, doc: IAllDocumentInfo) => set((state) => {
+    setSingleDocument: (id: string, doc: ISingleDocumentInfo) => set((state) => {
         return {
             singleDocuments: {
                 ...state.singleDocuments,

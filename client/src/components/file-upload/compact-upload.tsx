@@ -165,7 +165,7 @@ export default function FileUploadCompact({
                                         href={file.preview}
                                         target={'_blank'}
                                         rel={'noopener noreferrer nofollow'}
-                                        className="text-sm hover:underline"
+                                        className="text-sm hover:underline w-96"
                                     >
                                         {file.file.name}
                                     </a>

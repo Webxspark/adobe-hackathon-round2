@@ -3,7 +3,7 @@ export interface ITab {
     title: string;
     id: string;
     fileName?: string;
-    info?: ISingleDocumentInfo
+    info?: ISemanticSearchResult | undefined;
 }
 
 export interface IDocumentOutline {
@@ -50,4 +50,21 @@ export interface IResponseBatchUpload {
     successful_uploads: number;
     message: string;
     results: IResponseBatchUploadResult[];
+}
+
+export interface ISemanticSearchResult {
+    id: string;
+    document_id: string;
+    document_title: string;
+    document_filename: string;
+    section_title: string;
+    snippet: string;
+    page_number: number;
+    relevance_score: number;
+}
+
+export interface IConnectDotsResponse {
+    query: string;
+    processing_time: number;
+    results: ISemanticSearchResult[];
 }

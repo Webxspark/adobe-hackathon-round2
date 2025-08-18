@@ -9,6 +9,7 @@ import {Suspense, useEffect, useRef, useState, lazy} from "react";
 import Keybinds from "@/components/utils/keybinds.tsx";
 
 const PdfReaderWrapper = lazy(() => import("@/views/pdf-reader-wrapper.tsx"));
+const AppWidgets = lazy(() => import("@/components/utils/widgets.tsx"));
 const App = () => {
     const {activeTab, setActiveTab} = useAppContext();
     const [loadPDFReaderWrapper, setLoadPDFReaderWrapper] = useState<boolean>(false);
@@ -39,11 +40,12 @@ const App = () => {
                 loadPDFReaderWrapper && <Suspense
                     fallback={<Preloader className={'h-[80dvh] flex items-center justify-center'}/>}
                 >
-                    <PdfReaderWrapper />
+                    <PdfReaderWrapper/>
                 </Suspense>
             }
 
-            <Keybinds />
+            <Suspense fallback={null}><AppWidgets/></Suspense>
+            <Keybinds/>
         </div>
     );
 };
