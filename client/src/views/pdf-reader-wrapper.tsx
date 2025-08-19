@@ -27,7 +27,12 @@ const PdfRender = ({url, className, pid, uid, fileName, info}: IPdfRenderCompone
     const {singleDocuments, setSingleDocument} = useAppContext();
     const singleDocumentsRef = useRef(singleDocuments);
     const div_id = Date.now() + uid; // Unique ID for the div element
-    const {setConnectDotsOpen, setConnectDotsSessionData} = useWidgetsContext();
+    const {
+        setConnectDotsOpen,
+        setConnectDotsSessionData,
+        setShowOptions,
+        setShowOptionsSessionData
+    } = useWidgetsContext();
 
     // Keep ref updated with current singleDocuments
     useEffect(() => {
@@ -49,9 +54,6 @@ const PdfRender = ({url, className, pid, uid, fileName, info}: IPdfRenderCompone
             .finally(() => setLoading(false));
     }, [pid, setSingleDocument])
 
-    useEffect(() => {
-        console.log(singleDocuments[pid])
-    }, [singleDocuments]);
 
     useEffect(() => {
         if (!isMounted.current) {
@@ -107,7 +109,7 @@ const PdfRender = ({url, className, pid, uid, fileName, info}: IPdfRenderCompone
                                                         const currentPageNumber = (result as number) - 1;
                                                         const docInfo = singleDocumentsRef.current[pid];
                                                         if (docInfo) {
-                                                            const relevantSections:IDocumentSection[] = [];
+                                                            const relevantSections: IDocumentSection[] = [];
                                                             // get sections from the docInfo.sections and append to relevantSections where page_number is equal to currentPageNumber
                                                             docInfo.sections.forEach(section => {
                                                                 if (section.page_number === currentPageNumber) {
@@ -124,6 +126,8 @@ const PdfRender = ({url, className, pid, uid, fileName, info}: IPdfRenderCompone
                                                                 context: contextText,
                                                                 filename: docInfo.document.original_filename
                                                             });
+                                                            setShowOptions(true);
+                                                            setShowOptionsSessionData(singleDocumentsRef.current[pid]!.sections, currentPageNumber);
                                                         } else {
                                                             console.log("Document info not yet loaded");
                                                         }

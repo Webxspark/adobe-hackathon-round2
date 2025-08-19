@@ -68,3 +68,20 @@ export interface IConnectDotsResponse {
     processing_time: number;
     results: ISemanticSearchResult[];
 }
+
+export interface IInsightGenerationResponse {
+    selected_text: string;
+    insight_type: string;
+    insights: string;
+    related_sections_count: number;
+    grounded_in_documents: boolean;
+}
+
+export interface IAudioGenerationResponse {
+    success: boolean;
+    audio_file: string;
+    script: string;
+    duration_estimate: string;
+    audio_type: string;
+    sections_included: number;
+}
