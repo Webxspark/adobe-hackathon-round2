@@ -1,17 +1,19 @@
-import {Button} from "@/components/ui/button.tsx";
-import {Grip} from "lucide-react";
-import {useAppContext} from "@/contexts/app.ts";
-import {cn} from "@/lib/utils.ts";
+import { Button } from "@/components/ui/button.tsx";
+import { Grip } from "lucide-react";
+import { useAppContext } from "@/contexts/app.ts";
+import { cn } from "@/lib/utils.ts";
 import Navbar from "@/components/navbar.tsx";
 import FilePicker from "@/views/file-picker.tsx";
 import Preloader from "@/components/preloader.tsx";
-import {Suspense, useEffect, useRef, useState, lazy} from "react";
+import { Suspense, useEffect, useRef, useState, lazy } from "react";
 import Keybinds from "@/components/utils/keybinds.tsx";
+import { APIGetAdobePDFRenderAPIKey } from "./apis/helper";
+import { toast } from "sonner";
 
 const PdfReaderWrapper = lazy(() => import("@/views/pdf-reader-wrapper.tsx"));
 const AppWidgets = lazy(() => import("@/components/utils/widgets.tsx"));
 const App = () => {
-    const {activeTab, setActiveTab} = useAppContext();
+    const { activeTab, setActiveTab, setPdfEmbedAPI } = useAppContext();
     const [loadPDFReaderWrapper, setLoadPDFReaderWrapper] = useState<boolean>(false);
     const isPDFReaderWrapperLoaded = useRef(false);
 
@@ -21,6 +23,17 @@ const App = () => {
             setLoadPDFReaderWrapper(true);
         }
     }, [activeTab]);
+
+    useEffect(() => {
+        APIGetAdobePDFRenderAPIKey()
+            .then(res => {
+                setPdfEmbedAPI(res.api_key);
+            })
+            .catch(err => {
+                console.error(err);
+                toast.error("Failed to retrieve PDF Embed API Key!");
+            })
+    }, [])
     return (
         <div className={'min-h-screen dark:bg-[#18181b] bg-[#f4f4f5]'}>
             <div className={'dark:bg-[#09090b] bg-white flex items-center'}>
@@ -29,23 +42,23 @@ const App = () => {
                     onClick={() => setActiveTab(null)}
                     className={cn('rounded-none p-3  border-t-2 border-transparent', activeTab === null && "dark:bg-[#18181b] bg-[#f4f4f5] border-primary")}
                 >
-                    <Grip className={'size-6 dark:text-white'}/>
+                    <Grip className={'size-6 dark:text-white'} />
                 </Button>
-                <Navbar/>
+                <Navbar />
             </div>
             <FilePicker
                 className={cn("hidden", activeTab === null && "grid")}
             />
             {
                 loadPDFReaderWrapper && <Suspense
-                    fallback={<Preloader className={'h-[80dvh] flex items-center justify-center'}/>}
+                    fallback={<Preloader className={'h-[80dvh] flex items-center justify-center'} />}
                 >
-                    <PdfReaderWrapper/>
+                    <PdfReaderWrapper />
                 </Suspense>
             }
 
-            <Suspense fallback={null}><AppWidgets/></Suspense>
-            <Keybinds/>
+            <Suspense fallback={null}><AppWidgets /></Suspense>
+            <Keybinds />
         </div>
     );
 };

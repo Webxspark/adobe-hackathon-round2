@@ -1,7 +1,6 @@
 import {cn} from "@/lib/utils.ts";
 import {useAppContext} from "@/contexts/app.ts";
 import {useCallback, useEffect, useRef, useState} from "react";
-import {APP_CONFIG} from "@/constants/app.ts";
 import {LinearProgress} from "@mui/material";
 import {APIFetchSingleDocument} from "@/apis/helper.ts";
 import {toast} from "sonner";
@@ -24,7 +23,7 @@ interface IPdfRenderComponentProps {
 const PdfRender = ({url, className, pid, uid, fileName, info}: IPdfRenderComponentProps) => {
     const isMounted = useRef(false);
     const [loading, setLoading] = useState(false);
-    const {singleDocuments, setSingleDocument} = useAppContext();
+    const {singleDocuments, setSingleDocument, pdfEmbedAPI} = useAppContext();
     const singleDocumentsRef = useRef(singleDocuments);
     const div_id = Date.now() + uid; // Unique ID for the div element
     const {
@@ -59,7 +58,7 @@ const PdfRender = ({url, className, pid, uid, fileName, info}: IPdfRenderCompone
         if (!isMounted.current) {
             isMounted.current = true;
             let adobeDCView = new AdobeDC.View({
-                clientId: APP_CONFIG.EMBED_API_CLIENT_ID,
+                clientId: pdfEmbedAPI,
                 divId: `${div_id}-${pid}`,
             })
             let previewFilePromise = adobeDCView.previewFile({

@@ -17,7 +17,9 @@ interface AppState {
     singleDocuments: {
         [key: string]: ISingleDocumentInfo | undefined
     },
-    setSingleDocument: (id: string, doc: ISingleDocumentInfo) => void
+    setSingleDocument: (id: string, doc: ISingleDocumentInfo) => void;
+    pdfEmbedAPI: string,
+    setPdfEmbedAPI: (url: string) => void;
 }
 
 export const useAppContext = create<AppState>((set, get) => ({
@@ -105,5 +107,9 @@ export const useAppContext = create<AppState>((set, get) => ({
                 [id]: doc
             }
         };
-    })
+    }),
+    pdfEmbedAPI: "",
+    setPdfEmbedAPI: (url: string) => set(() => ({
+        pdfEmbedAPI: url
+    }))
 }))

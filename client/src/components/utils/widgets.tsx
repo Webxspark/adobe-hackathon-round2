@@ -126,6 +126,12 @@ const AppWidgets = () => {
                 sections.push(section.id);
             }
         })
+
+        if(sections.length === 0){
+            toast.error("No sections found for the current page. Please select a different page or ensure sections are available.");
+            return;
+        }
+
         console.log(sections);
         setOptionsButtonLoading(true);
         APIGenerateAudio(connectDotsSessionData.selectedText, sections, audioOverviewTypeSelection)

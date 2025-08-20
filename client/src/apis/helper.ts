@@ -1,4 +1,4 @@
-import {APP_CONFIG} from "@/constants/app.ts";
+import { APP_CONFIG } from "@/constants/app.ts";
 import type {
     IAllDocumentInfo, IAudioGenerationResponse, IConnectDotsResponse,
     IInsightGenerationResponse, IResponseBatchUpload, ISingleDocumentInfo
@@ -77,4 +77,10 @@ export const APIGenerateAudio = (text_content: string, related_sections: string[
         })
     })
         .then(res => res.json()) as Promise<IAudioGenerationResponse>;
+}
+
+
+export const APIGetAdobePDFRenderAPIKey = (): Promise<{ api_key: string }> => {
+    return fetch(`${APP_CONFIG.BACKEND_URL}/pdf-embed-api`)
+        .then(response => response.json()) as Promise<{ api_key: string }>;
 }
