@@ -83,13 +83,17 @@ docker run -p 8080:8080 \
   -e TTS_PROVIDER="azure (openai tts) | local (eSpeak)" \
   -e AZURE_TTS_KEY="your_azure_tts_key" \
   -e AZURE_TTS_ENDPOINT="your_azure_tts_endpoint" \
-  -e ADOBE_EMBED_API_KEY="your_adobe_embed_api_key" \
+  -e ADOBE_EMBED_API_KEY="5e6da846e0fa492288b7f12243a678eb" \
   -e LLM_PROVIDER="gemini" \
   -e GEMINI_MODEL="gemini-2.5-flash" \
   -e GEMINI_API_KEY="your_gemini_api_key" \
   adobe-finale:latest
 ```
+Adobe Embed API Key: `5e6da846e0fa492288b7f12243a678eb`
+<br>
+ℹ️ To improve the user experience and ensure the application functions properly, it's important to pass your Embed API Key with the `docker run` command. This ensures smooth integration without the need to fill the API key in a form.
 
+<br>
 🎉 **That's it!** Visit `http://localhost:8080` and start uploading your PDFs!
 
 ### Environment Variables
